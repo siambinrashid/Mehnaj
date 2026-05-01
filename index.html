@@ -3,43 +3,156 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Mehnaj ❤️</title>
+
 <style>
-body {
+body{
+  margin:0;
   background:black;
-  color:pink;
-  text-align:center;
+  color:white;
   font-family:Arial;
-  margin-top:30%;
+  text-align:center;
+  overflow:hidden;
 }
-.flower {
-  font-size:60px;
-  animation:bloom 2s infinite alternate;
+
+/* center */
+.container{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
 }
-@keyframes bloom {
-  from {transform:scale(1);}
-  to {transform:scale(1.4);}
+
+/* button */
+button{
+  padding:12px 24px;
+  border:none;
+  background:pink;
+  color:black;
+  border-radius:25px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* flower */
+.flower{
+  font-size:80px;
+  opacity:0;
+  transform:scale(0);
+  transition:1.2s;
+}
+
+/* text */
+#text{
+  margin-top:20px;
+  font-size:18px;
+  color:pink;
+  min-height:40px;
+}
+
+/* final message */
+#final{
+  margin-top:15px;
+  font-size:20px;
+  opacity:0;
+  transition:1s;
+}
+
+/* hearts */
+.heart{
+  position:absolute;
+  color:red;
+  font-size:20px;
+  animation:float 4s linear infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-800px);}
 }
 </style>
+
 </head>
+
 <body>
 
-<h2>Hey Mehnaj...</h2>
-<p id="text"></p>
-<div class="flower">🌸</div>
+<div class="container">
+  <button onclick="start()">Tap this 🌸</button>
+  <div class="flower" id="flower">🌸</div>
+  <p id="text"></p>
+  <p id="final"></p>
+</div>
+
+<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
 <script>
-let message = "A flower for the flower ❤️";
-let i = 0;
 
-function typeWriter() {
-  if (i < message.length) {
-    document.getElementById("text").innerHTML += message.charAt(i);
-    i++;
-    setTimeout(typeWriter, 50);
+function start(){
+  document.querySelector("button").style.display="none";
+
+  // play music (some phones need tap — this works)
+  document.getElementById("music").play();
+
+  let flower=document.getElementById("flower");
+  flower.style.opacity=1;
+  flower.style.transform="scale(1.6)";
+
+  let messages=[
+    "Hey Mehnaj...",
+    "I didn’t plan this...",
+    "But somehow you became special to me...",
+    "So I made something small..."
+  ];
+
+  let text=document.getElementById("text");
+  let index=0;
+
+  function showLine(){
+    if(index < messages.length){
+      typeText(messages[index], () => {
+        index++;
+        setTimeout(showLine, 800);
+      });
+    } else {
+      showFinal();
+    }
   }
+
+  function typeText(msg, callback){
+    text.innerHTML="";
+    let i=0;
+    function typing(){
+      if(i<msg.length){
+        text.innerHTML+=msg.charAt(i);
+        i++;
+        setTimeout(typing,40);
+      } else {
+        callback();
+      }
+    }
+    typing();
+  }
+
+  function showFinal(){
+    let final=document.getElementById("final");
+    final.innerHTML="A flower for the flower… Mehnaj ❤️";
+    final.style.opacity=1;
+  }
+
+  setTimeout(showLine, 800);
+
+  // floating hearts
+  setInterval(()=>{
+    let heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="❤️";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.top="100vh";
+    document.body.appendChild(heart);
+
+    setTimeout(()=>heart.remove(),4000);
+  },250);
 }
 
-typeWriter();
 </script>
 
 </body>
