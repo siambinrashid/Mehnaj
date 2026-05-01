@@ -80,23 +80,22 @@ body{
   <p id="final"></p>
 </div>
 
-<!-- ✅ use reliable audio -->
+<!-- 🎶 YOUR SONG -->
 <audio id="music" preload="auto" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8f9c0c5d2.mp3" type="audio/mpeg">
+  <source src="https://docs.google.com/uc?export=download&id=1GhF0XymfNwMh-9NfuQlC-RLbv4htkXkF" type="audio/mpeg">
 </audio>
 
 <script>
 
-// 🔥 MUST be directly tied to click
+// MUST be direct tap
 document.body.addEventListener("click", startExperience, { once: true });
 
 function startExperience(){
 
   let audio = document.getElementById("music");
 
-  // 🔥 critical: play directly on click
-  audio.muted = false;
-  audio.play();
+  // play music
+  audio.play().catch(() => {});
 
   runApp();
 }
@@ -153,7 +152,7 @@ function runApp(){
 
   setTimeout(showLine, 800);
 
-  // hearts animation
+  // floating hearts
   setInterval(()=>{
     let heart = document.createElement("div");
     heart.className="heart";
