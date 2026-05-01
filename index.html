@@ -320,7 +320,7 @@
 
   .her-name {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
+    font-style: normal;
     font-weight: 300;
     font-size: clamp(2.8rem, 10vw, 5rem);
     color: var(--rose-light);
@@ -389,36 +389,12 @@
     text-transform: uppercase;
     color: rgba(245,184,196,0.6);
   }
-
-  .wave {
-    display: flex; align-items: center; gap: 2px;
-    height: 14px;
-  }
-
-  .wave span {
-    display: block;
-    width: 2.5px;
-    background: var(--rose);
-    border-radius: 2px;
-    height: 4px;
-    animation: waveBar 0.8s ease-in-out infinite;
-  }
-
-  .wave span:nth-child(1) { animation-delay: 0s; }
-  .wave span:nth-child(2) { animation-delay: 0.12s; }
-  .wave span:nth-child(3) { animation-delay: 0.24s; }
-  .wave span:nth-child(4) { animation-delay: 0.12s; }
-  .wave span:nth-child(5) { animation-delay: 0s; }
-
-  @keyframes waveBar {
-    0%,100% { height: 4px; }
-    50%      { height: 13px; }
-  }
-
-  .wave.paused span { animation-play-state: paused; }
 </style>
 </head>
 <body>
+
+<!-- Hidden Audio File -->
+<audio id="my-audio" src="love.mpe" crossorigin="anonymous" loop></audio>
 
 <!-- Tap Screen -->
 <div id="tap-screen" onclick="beginExperience()">
@@ -497,9 +473,8 @@
   <div class="music-bar">
     <span class="music-note">♪</span>
     <span class="music-label">They Call It Love</span>
-    <div class="wave" id="waveAnim">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
+    <!-- Replaced static CSS wave with real-time Web Audio Canvas -->
+    <canvas id="oscillator" width="50" height="16" style="display: block; margin-left: 5px;"></canvas>
   </div>
 </div>
 
@@ -541,68 +516,61 @@
   }
 })();
 
-/* ── Audio engine ── */
-let audioCtx = null;
-let started = false;
-
-function buildMelody(ctx) {
-  const master = ctx.createGain();
-  master.gain.setValueAtTime(0.0, ctx.currentTime);
-  master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 2);
-  master.connect(ctx.destination);
-
-  function note(freq, start, dur, vol=0.18, type='sine') {
-    const osc = ctx.createOscillator();
-    const env = ctx.createGain();
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
-    env.gain.setValueAtTime(0, ctx.currentTime + start);
-    env.gain.linearRampToValueAtTime(vol, ctx.currentTime + start + 0.08);
-    env.gain.setValueAtTime(vol, ctx.currentTime + start + dur - 0.1);
-    env.gain.linearRampToValueAtTime(0, ctx.currentTime + start + dur);
-    osc.connect(env);
-    env.connect(master);
-    osc.start(ctx.currentTime + start);
-    osc.stop(ctx.currentTime + start + dur + 0.1);
-  }
-
-  // Gentle romantic melody — repeating 20s loop
-  const loop = 20;
-  function playLoop(offset) {
-    const melody = [
-      [392,0,.6],[440,.65,.5],[494,1.2,.5],[523,1.75,.8],
-      [494,2.6,.5],[440,3.15,.5],[392,3.7,1.1],
-      [349,4.9,.6],[392,5.55,.5],[440,6.1,.5],[494,6.65,.8],
-      [440,7.5,.5],[392,8.0,.5],[349,8.55,1.2],
-      [330,9.8,.5],[349,10.35,.5],[392,10.9,.5],[440,11.45,.8],
-      [392,12.3,.5],[349,12.85,.5],[330,13.4,1.1],
-      [294,14.55,.5],[330,15.1,.5],[349,15.65,.5],[392,16.2,.8],
-      [440,17.05,.5],[494,17.6,.5],[523,18.15,1.85],
-    ];
-
-    const bass = [
-      [196,0,1.5,.06,'triangle'],[220,1.75,1.5,.06,'triangle'],
-      [175,3.5,1.4,.06,'triangle'],[196,4.9,1.5,.06,'triangle'],
-      [220,6.65,1.5,.06,'triangle'],[175,8.55,1.4,.06,'triangle'],
-      [165,9.8,1.5,.06,'triangle'],[175,11.45,1.5,.06,'triangle'],
-      [196,13.4,1.5,.06,'triangle'],[147,14.55,1.5,.06,'triangle'],
-      [175,16.2,1.5,.06,'triangle'],[196,18.15,1.85,.06,'triangle'],
-    ];
-
-    melody.forEach(([f,s,d]) => note(f, offset+s, d, 0.16, 'sine'));
-    bass.forEach(([f,s,d,v,t]) => note(f, offset+s, d, v, t));
-  }
-
-  // Play 4 loops
-  for (let i=0; i<4; i++) playLoop(i * loop);
-}
+/* ── Real-Time Web Audio Engine ── */
+let isInitialized = false;
 
 function startAudio() {
-  if (started) return;
-  started = true;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  buildMelody(audioCtx);
+  const audioEl = document.getElementById('my-audio');
+  
+  // Start playing your local GitHub file
+  audioEl.play().catch(e => console.log("Audio play blocked by browser:", e));
+
+  // Initialize Web Audio API visualizer only once
+  if (!isInitialized) {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioCtx.createAnalyser();
+    const source = audioCtx.createMediaElementSource(audioEl);
+    
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    
+    analyser.fftSize = 512; // Small size for the mini canvas
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+    
+    const canvasEl = document.getElementById('oscillator');
+    const ctx = canvasEl.getContext('2d');
+    const sliceWidth = canvasEl.width / dataArray.length;
+
+    function draw() {
+      requestAnimationFrame(draw);
+      analyser.getByteTimeDomainData(dataArray);
+
+      // Clear the canvas each frame
+      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+
+      // Draw the wave in the "--rose" color to match your theme perfectly
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#e8748a'; 
+      ctx.beginPath();
+
+      let x = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = v * (canvasEl.height / 2);
+        
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+        x += sliceWidth;
+      }
+      ctx.stroke();
+    }
+    
+    draw();
+    isInitialized = true;
+  }
 }
 
 /* ── Begin experience on tap ── */
