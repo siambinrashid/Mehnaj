@@ -4,588 +4,149 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>For Mehnaj 🌸</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Tenor+Sans&display=swap" rel="stylesheet"/>
+
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body{
+  margin:0;
+  background:#14080f; /* deep romantic dark */
+  color:#f5c2cf;
+  font-family: 'Cormorant Garamond', serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  overflow:hidden;
+}
 
-  :root {
-    --rose: #e8748a;
-    --rose-light: #f5b8c4;
-    --rose-pale: #fde8ec;
-    --gold: #c9a96e;
-    --cream: #fdf6f0;
-    --deep: #3a1a2e;
-    --petal1: #f472b6;
-    --petal2: #e879f9;
-    --petal3: #fb7185;
-    --green: #4ade80;
-    --green-dark: #16a34a;
-  }
+/* center layout */
+.container{
+  text-align:center;
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    background: var(--deep);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    overflow: hidden;
-  }
+/* tap text */
+#tap{
+  font-size:18px;
+  letter-spacing:2px;
+  opacity:0.6;
+  animation:fade 2s infinite;
+}
 
-  /* ── Tap screen ── */
-  #tap-screen {
-    position: fixed; inset: 0;
-    background: var(--deep);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    z-index: 100;
-    cursor: pointer;
-    transition: opacity 0.8s ease;
-  }
+/* flower */
+.flower{
+  font-size:70px;
+  margin:20px 0;
+  opacity:0;
+  transform:scale(0.6);
+  transition:1.2s ease;
+}
 
-  .tap-stars {
-    position: absolute; inset: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
+/* name */
+.name{
+  font-size:42px;
+  font-style:italic;
+  opacity:0;
+  transition:1s;
+}
 
-  .star {
-    position: absolute;
-    border-radius: 50%;
-    background: white;
-    animation: twinkle var(--d, 3s) ease-in-out infinite;
-  }
+/* message */
+.message{
+  font-size:18px;
+  margin-top:10px;
+  opacity:0;
+  line-height:1.6;
+  transition:1s;
+}
 
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.1; transform: scale(0.8); }
-    50% { opacity: 0.9; transform: scale(1.2); }
-  }
-
-  .tap-rose {
-    font-size: 72px;
-    animation: breathe 2.5s ease-in-out infinite;
-    filter: drop-shadow(0 0 24px rgba(232,116,138,0.6));
-    margin-bottom: 2rem;
-  }
-
-  @keyframes breathe {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.08); }
-  }
-
-  .tap-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(2.5rem, 8vw, 4.5rem);
-    color: var(--rose-light);
-    letter-spacing: 0.05em;
-    margin-bottom: 1rem;
-  }
-
-  .tap-hint {
-    font-family: 'Tenor Sans', sans-serif;
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.35; }
-    50% { opacity: 0.8; }
-  }
-
-  .tap-screen.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* ── Main scene ── */
-  #main {
-    position: fixed; inset: 0;
-    background: linear-gradient(160deg, #1a0a14 0%, #2d0f22 40%, #1a0a14 100%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    opacity: 0;
-    transition: opacity 1s ease 0.4s;
-    overflow: hidden;
-  }
-
-  #main.visible { opacity: 1; }
-
-  /* petals floating bg */
-  .bg-petal {
-    position: absolute;
-    font-size: 1.2rem;
-    pointer-events: none;
-    animation: floatDown var(--fd, 8s) linear infinite;
-    opacity: 0;
-    top: -50px;
-  }
-
-  @keyframes floatDown {
-    0%   { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.8); }
-    10%  { opacity: 0.6; }
-    90%  { opacity: 0.4; }
-    100% { opacity: 0; transform: translateY(110vh) rotate(720deg) scale(1.2); }
-  }
-
-  /* ambient glow orbs */
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-
-  /* ── Flower ── */
-  .flower-scene {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: sceneFloat 5s ease-in-out infinite;
-    animation-delay: 2s;
-  }
-
-  @keyframes sceneFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .flower {
-    position: relative;
-    width: 160px; height: 160px;
-    margin-bottom: -8px;
-  }
-
-  .petal {
-    position: absolute;
-    width: 52px; height: 78px;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    left: 50%; top: 50%;
-    margin-left: -26px; margin-top: -65px;
-    transform-origin: bottom center;
-    opacity: 0;
-    animation: bloomPetal 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
-  }
-
-  .petal:nth-child(1)  { transform:rotate(0deg);   background: linear-gradient(160deg,#f9a8d4,#f472b6); animation-delay:1.0s; }
-  .petal:nth-child(2)  { transform:rotate(45deg);  background: linear-gradient(160deg,#fbcfe8,#e879f9); animation-delay:1.1s; }
-  .petal:nth-child(3)  { transform:rotate(90deg);  background: linear-gradient(160deg,#f9a8d4,#fb7185); animation-delay:1.2s; }
-  .petal:nth-child(4)  { transform:rotate(135deg); background: linear-gradient(160deg,#f0abfc,#e879f9); animation-delay:1.3s; }
-  .petal:nth-child(5)  { transform:rotate(180deg); background: linear-gradient(160deg,#f9a8d4,#f472b6); animation-delay:1.4s; }
-  .petal:nth-child(6)  { transform:rotate(225deg); background: linear-gradient(160deg,#fbcfe8,#fb7185); animation-delay:1.5s; }
-  .petal:nth-child(7)  { transform:rotate(270deg); background: linear-gradient(160deg,#f9a8d4,#f472b6); animation-delay:1.6s; }
-  .petal:nth-child(8)  { transform:rotate(315deg); background: linear-gradient(160deg,#f0abfc,#e879f9); animation-delay:1.7s; }
-
-  /* inner layer */
-  .petal-inner {
-    position: absolute;
-    width: 34px; height: 52px;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    left: 50%; top: 50%;
-    margin-left: -17px; margin-top: -44px;
-    transform-origin: bottom center;
-    opacity: 0;
-    animation: bloomPetal 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
-  }
-
-  .petal-inner:nth-child(9)  { transform:rotate(22deg);  background:rgba(255,200,230,0.5); animation-delay:1.8s; }
-  .petal-inner:nth-child(10) { transform:rotate(112deg); background:rgba(255,200,230,0.5); animation-delay:1.85s; }
-  .petal-inner:nth-child(11) { transform:rotate(202deg); background:rgba(255,200,230,0.5); animation-delay:1.9s; }
-  .petal-inner:nth-child(12) { transform:rotate(292deg); background:rgba(255,200,230,0.5); animation-delay:1.95s; }
-
-  @keyframes bloomPetal {
-    0%   { opacity:0; transform: rotate(var(--r,0deg)) scale(0.2); }
-    100% { opacity:1; transform: rotate(var(--r,0deg)) scale(1); }
-  }
-
-  /* keep rotation after bloom */
-  .petal:nth-child(1)  { --r:0deg; }
-  .petal:nth-child(2)  { --r:45deg; }
-  .petal:nth-child(3)  { --r:90deg; }
-  .petal:nth-child(4)  { --r:135deg; }
-  .petal:nth-child(5)  { --r:180deg; }
-  .petal:nth-child(6)  { --r:225deg; }
-  .petal:nth-child(7)  { --r:270deg; }
-  .petal:nth-child(8)  { --r:315deg; }
-  .petal-inner:nth-child(9)  { --r:22deg; }
-  .petal-inner:nth-child(10) { --r:112deg; }
-  .petal-inner:nth-child(11) { --r:202deg; }
-  .petal-inner:nth-child(12) { --r:292deg; }
-
-  /* sway after bloom */
-  .petal, .petal-inner {
-    animation-fill-mode: forwards;
-  }
-
-  .flower-center {
-    position: absolute;
-    width: 44px; height: 44px;
-    background: radial-gradient(circle at 35% 35%, #fef9c3, #fbbf24 60%, #d97706);
-    border-radius: 50%;
-    left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    box-shadow: 0 0 20px rgba(251,191,36,0.5);
-    opacity: 0;
-    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 2.1s forwards;
-  }
-
-  @keyframes popIn {
-    0%   { opacity:0; transform:translate(-50%,-50%) scale(0); }
-    100% { opacity:1; transform:translate(-50%,-50%) scale(1); }
-  }
-
-  /* sparkles around center */
-  .sparkle {
-    position: absolute;
-    border-radius: 50%;
-    animation: sparkleAnim 2s ease-in-out infinite;
-    opacity: 0;
-  }
-
-  @keyframes sparkleAnim {
-    0%,100% { opacity:0; transform:scale(0.3); }
-    50%      { opacity:1; transform:scale(1); }
-  }
-
-  /* stem */
-  .stem-container {
-    position: relative;
-    display: flex; justify-content: center;
-    width: 80px;
-  }
-
-  .stem {
-    width: 7px;
-    background: linear-gradient(180deg, #4ade80, #16a34a);
-    border-radius: 4px;
-    height: 0;
-    animation: growStem 0.8s ease-out 0.4s forwards;
-  }
-
-  @keyframes growStem { to { height: 130px; } }
-
-  .leaf-svg {
-    position: absolute;
-    opacity: 0;
-    animation: leafIn 0.6s ease-out forwards;
-  }
-
-  .leaf-svg.left  { left: -30px; top: 40px; animation-delay: 0.9s; }
-  .leaf-svg.right { right: -30px; top: 70px; animation-delay: 1.1s; }
-
-  @keyframes leafIn {
-    0%   { opacity:0; transform:scaleX(0); }
-    100% { opacity:1; transform:scaleX(1); }
-  }
-
-  /* ground */
-  .ground {
-    width: 150px; height: 24px;
-    background: radial-gradient(ellipse, #5c2d1a 30%, transparent 80%);
-    border-radius: 50%;
-    margin-top: -4px;
-    opacity: 0;
-    animation: fadeUp 0.5s ease 0.3s forwards;
-  }
-
-  @keyframes fadeUp {
-    0%   { opacity:0; transform:translateY(8px); }
-    100% { opacity:0.6; transform:translateY(0); }
-  }
-
-  /* ── Text ── */
-  .text-block {
-    text-align: center;
-    margin-top: 2.5rem;
-    opacity: 0;
-    animation: riseIn 1.2s ease-out 2.5s forwards;
-  }
-
-  @keyframes riseIn {
-    0%   { opacity:0; transform:translateY(20px); }
-    100% { opacity:1; transform:translateY(0); }
-  }
-
-  .for-label {
-    font-family: 'Tenor Sans', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: rgba(245,184,196,0.5);
-    margin-bottom: 0.4rem;
-  }
-
-  .her-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: normal;
-    font-weight: 300;
-    font-size: clamp(2.8rem, 10vw, 5rem);
-    color: var(--rose-light);
-    letter-spacing: 0.04em;
-    line-height: 1;
-    text-shadow: 0 0 40px rgba(232,116,138,0.4);
-    margin-bottom: 1rem;
-  }
-
-  .divider {
-    display: flex; align-items: center; gap: 12px;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-
-  .divider-line {
-    width: 40px; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold));
-  }
-
-  .divider-line.r { background: linear-gradient(270deg, transparent, var(--gold)); }
-
-  .divider-diamond {
-    width: 5px; height: 5px;
-    background: var(--gold);
-    transform: rotate(45deg);
-  }
-
-  .message {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(1rem, 3.5vw, 1.25rem);
-    color: rgba(245,184,196,0.75);
-    line-height: 1.9;
-    max-width: 340px;
-    margin: 0 auto;
-  }
-
-  /* ── Music bar ── */
-  .music-bar {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 20px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(245,184,196,0.2);
-    border-radius: 99px;
-    backdrop-filter: blur(10px);
-    opacity: 0;
-    animation: riseIn 1s ease-out 3.2s forwards;
-    white-space: nowrap;
-  }
-
-  .music-note {
-    font-size: 14px;
-    color: var(--rose-light);
-  }
-
-  .music-label {
-    font-family: 'Tenor Sans', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(245,184,196,0.6);
-  }
+/* subtle fade */
+@keyframes fade{
+  0%,100%{opacity:0.4}
+  50%{opacity:0.9}
+}
 </style>
 </head>
+
 <body>
 
-<!-- Hidden Audio File -->
-<audio id="my-audio" src="love.mp3" crossorigin="anonymous" loop></audio>
+<div class="container">
+  <div id="tap">tap anywhere</div>
 
-<!-- Tap Screen -->
-<div id="tap-screen" onclick="beginExperience()">
-  <div class="tap-stars" id="tapStars"></div>
+  <div class="flower" id="flower">🌸</div>
 
-  <div class="tap-rose">🌸</div>
-  <div class="tap-name">Mehnaj</div>
-  <div class="tap-hint">tap anywhere</div>
-</div>
+  <div class="name" id="name">Mehnaj</div>
 
-<!-- Main Scene -->
-<div id="main">
-  <!-- Ambient orbs -->
-  <div class="orb" style="width:300px;height:300px;background:rgba(232,116,138,0.08);top:-100px;right:-100px;"></div>
-  <div class="orb" style="width:250px;height:250px;background:rgba(168,85,247,0.06);bottom:-80px;left:-80px;"></div>
-  <div class="orb" style="width:200px;height:200px;background:rgba(232,116,138,0.05);bottom:20%;right:10%;"></div>
-
-  <!-- Floating petals bg -->
-  <div id="bgPetals"></div>
-
-  <!-- Flower -->
-  <div class="flower-scene">
-    <div class="flower">
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal"></div>
-      <div class="petal-inner"></div>
-      <div class="petal-inner"></div>
-      <div class="petal-inner"></div>
-      <div class="petal-inner"></div>
-      <div class="flower-center"></div>
-
-      <!-- sparkles -->
-      <div class="sparkle" style="width:6px;height:6px;background:#fef08a;top:8px;left:40px;animation-delay:0.3s;"></div>
-      <div class="sparkle" style="width:5px;height:5px;background:#f9a8d4;top:20px;right:10px;animation-delay:0.9s;"></div>
-      <div class="sparkle" style="width:7px;height:7px;background:#fbbf24;top:35px;left:5px;animation-delay:1.4s;"></div>
-      <div class="sparkle" style="width:4px;height:4px;background:#e879f9;top:12px;right:35px;animation-delay:0.6s;"></div>
-    </div>
-
-    <div class="stem-container">
-      <svg class="leaf-svg left" width="38" height="20" viewBox="0 0 38 20">
-        <path d="M38 10 Q20 0 0 10 Q20 20 38 10Z" fill="#4ade80" opacity="0.85"/>
-      </svg>
-      <svg class="leaf-svg right" style="transform-origin:right center;" width="38" height="20" viewBox="0 0 38 20">
-        <path d="M0 10 Q18 0 38 10 Q18 20 0 10Z" fill="#22c55e" opacity="0.85"/>
-      </svg>
-      <div class="stem"></div>
-    </div>
-
-    <div class="ground"></div>
-  </div>
-
-  <!-- Message -->
-  <div class="text-block">
-    <div class="for-label">a flower for</div>
-    <div class="her-name">Mehnaj</div>
-    <div class="divider">
-      <div class="divider-line"></div>
-      <div class="divider-diamond"></div>
-      <div class="divider-line r"></div>
-    </div>
-    <div class="message">
-      You are the most beautiful thing<br>
-      in my entire world.<br><br>
-      They call it love —<br>
-      and it all belongs to you.
-    </div>
-  </div>
-
-  <!-- Music indicator -->
-  <div class="music-bar">
-    <span class="music-note">♪</span>
-    <span class="music-label">They Call It Love</span>
-    <!-- Replaced static CSS wave with real-time Web Audio Canvas -->
-    <canvas id="oscillator" width="50" height="16" style="display: block; margin-left: 5px;"></canvas>
+  <div class="message" id="msg">
+    A flower for the flower.<br>
+    They call it love.
   </div>
 </div>
 
 <script>
-/* ── Stars on tap screen ── */
-(function() {
-  const container = document.getElementById('tapStars');
-  for (let i = 0; i < 80; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 3 + 1;
-    s.style.cssText = `
-      width:${size}px; height:${size}px;
-      left:${Math.random()*100}%;
-      top:${Math.random()*100}%;
-      --d:${2 + Math.random()*4}s;
-      animation-delay:${Math.random()*4}s;
-    `;
-    container.appendChild(s);
+
+/* 🎶 ROMANTIC MUSIC */
+let audioCtx;
+
+function startAudio(){
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  const master = audioCtx.createGain();
+  master.gain.value = 0.15;
+  master.connect(audioCtx.destination);
+
+  function note(freq, start, duration, vol=0.12){
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.value = freq;
+
+    osc.connect(gain);
+    gain.connect(master);
+
+    gain.gain.setValueAtTime(0.0001, audioCtx.currentTime + start);
+    gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + start + 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + start + duration);
+
+    osc.start(audioCtx.currentTime + start);
+    osc.stop(audioCtx.currentTime + start + duration);
   }
-})();
 
-/* ── Floating background petals ── */
-(function() {
-  const container = document.getElementById('bgPetals');
-  const emojis = ['🌸','✿','❀','🌺'];
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement('div');
-    p.className = 'bg-petal';
-    p.textContent = emojis[i % emojis.length];
-    p.style.cssText = `
-      left: ${Math.random()*100}%;
-      --fd: ${7 + Math.random()*10}s;
-      animation-delay: ${Math.random()*12}s;
-      font-size: ${0.8 + Math.random()*0.8}rem;
-      opacity: 0;
-    `;
-    container.appendChild(p);
-  }
-})();
+  const melody = [
+    [392,0,1.5],[440,1.6,1.2],[494,2.9,1.2],[523,4.2,2.2],
+    [494,6.6,1.2],[440,7.9,1.2],[392,9.2,2.2]
+  ];
 
-/* ── Real-Time Web Audio Engine ── */
-let isInitialized = false;
-
-function startAudio() {
-  const audioEl = document.getElementById('my-audio');
-  
-  // Start playing your local GitHub file
-  audioEl.play().catch(e => console.log("Audio play blocked by browser:", e));
-
-  // Initialize Web Audio API visualizer only once
-  if (!isInitialized) {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const analyser = audioCtx.createAnalyser();
-    const source = audioCtx.createMediaElementSource(audioEl);
-    
-    source.connect(analyser);
-    analyser.connect(audioCtx.destination);
-    
-    analyser.fftSize = 512; // Small size for the mini canvas
-    const dataArray = new Uint8Array(analyser.frequencyBinCount);
-    
-    const canvasEl = document.getElementById('oscillator');
-    const ctx = canvasEl.getContext('2d');
-    const sliceWidth = canvasEl.width / dataArray.length;
-
-    function draw() {
-      requestAnimationFrame(draw);
-      analyser.getByteTimeDomainData(dataArray);
-
-      // Clear the canvas each frame
-      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-
-      // Draw the wave in the "--rose" color to match your theme perfectly
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = '#e8748a'; 
-      ctx.beginPath();
-
-      let x = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        const v = dataArray[i] / 128.0;
-        const y = v * (canvasEl.height / 2);
-        
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
-        x += sliceWidth;
-      }
-      ctx.stroke();
-    }
-    
-    draw();
-    isInitialized = true;
-  }
+  melody.forEach(([f,s,d])=>{
+    note(f,s,d);
+  });
 }
 
-/* ── Begin experience on tap ── */
-function beginExperience() {
+/* ✨ EXPERIENCE */
+document.body.addEventListener("click", () => {
+
+  document.getElementById("tap").style.display="none";
+
   startAudio();
 
-  const tap = document.getElementById('tap-screen');
-  const main = document.getElementById('main');
+  let flower = document.getElementById("flower");
+  let name = document.getElementById("name");
+  let msg = document.getElementById("msg");
 
-  tap.classList.add('hidden');
-  setTimeout(() => {
-    tap.style.display = 'none';
-    main.classList.add('visible');
-  }, 900);
-}
+  setTimeout(()=>{
+    flower.style.opacity = 1;
+    flower.style.transform = "scale(1)";
+  },200);
+
+  setTimeout(()=>{
+    name.style.opacity = 1;
+  },800);
+
+  setTimeout(()=>{
+    msg.style.opacity = 1;
+  },1400);
+
+}, { once:true });
+
 </script>
+
 </body>
 </html>
