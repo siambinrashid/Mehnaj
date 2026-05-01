@@ -15,7 +15,7 @@ body {
   overflow:hidden;
 }
 
-/* TAP SCREEN */
+/* Tap screen */
 #tap-screen{
   position:fixed;
   inset:0;
@@ -27,8 +27,7 @@ body {
 }
 
 .tap-rose{
-  font-size:70px;
-  animation: pulse 2s infinite;
+  font-size:60px;
 }
 
 .tap-name{
@@ -40,12 +39,7 @@ body {
   opacity:0.6;
 }
 
-@keyframes pulse{
-  0%,100%{transform:scale(1);}
-  50%{transform:scale(1.1);}
-}
-
-/* MAIN */
+/* Main */
 #main{
   position:fixed;
   inset:0;
@@ -61,98 +55,72 @@ body {
   opacity:1;
 }
 
-/* FLOWER */
+/* Flower */
 .flower{
-  font-size:90px;
-  opacity:0;
-  transform:scale(0);
-  transition:1s;
+  font-size:80px;
+  margin-bottom:20px;
 }
 
-/* TEXT */
-.text{
+/* Text */
+.message{
   color:pink;
-  font-size:22px;
-  margin-top:20px;
-  opacity:0;
-  transition:1s;
-}
-
-/* HEARTS */
-.heart{
-  position:absolute;
-  color:red;
   font-size:20px;
-  animation: float 4s linear infinite;
-}
-
-@keyframes float{
-  0%{transform:translateY(0);}
-  100%{transform:translateY(-800px);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- TAP -->
-<div id="tap-screen" onclick="startExperience()">
+<!-- Tap Screen -->
+<div id="tap-screen" onclick="beginExperience()">
   <div class="tap-rose">🌸</div>
   <div class="tap-name">Mehnaj</div>
   <div class="tap-hint">tap anywhere</div>
 </div>
 
-<!-- MAIN -->
+<!-- Main -->
 <div id="main">
-  <div class="flower" id="flower">🌸</div>
-  <div class="text" id="text">A flower for the flower… Mehnaj ❤️</div>
+  <div class="flower">🌸</div>
+  <div class="message">
+    A flower for the flower… ❤️
+  </div>
 </div>
-
-<!-- 🎶 YOUR SONG -->
-<audio id="music" preload="auto" loop>
-  <source src="https://docs.google.com/uc?export=download&id=1GhF0XymfNwMh-9NfuQlC-RLbv4htkXkF" type="audio/mpeg">
-</audio>
 
 <script>
 
-function startExperience(){
+// 🎶 BUILT-IN MUSIC (no mp3 needed)
+function startAudio() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
-  // play music
-  let audio = document.getElementById("music");
-  audio.play().catch(() => {});
+  function play(freq, time){
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
 
-  // hide tap screen
-  let tap = document.getElementById("tap-screen");
-  tap.style.display = "none";
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
 
-  // show main
-  let main = document.getElementById("main");
-  main.classList.add("visible");
+    gain.gain.setValueAtTime(0.1, ctx.currentTime + time);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + time + 1);
 
-  // flower animation
-  let flower = document.getElementById("flower");
-  setTimeout(()=>{
-    flower.style.opacity = 1;
-    flower.style.transform = "scale(1.5)";
-  },300);
+    osc.start(ctx.currentTime + time);
+    osc.stop(ctx.currentTime + time + 1);
+  }
 
-  // text animation
-  let text = document.getElementById("text");
-  setTimeout(()=>{
-    text.style.opacity = 1;
-  },1000);
+  // simple romantic melody
+  play(440,0);
+  play(494,0.5);
+  play(523,1);
+  play(494,1.5);
+  play(440,2);
+}
 
-  // floating hearts
-  setInterval(()=>{
-    let heart = document.createElement("div");
-    heart.className="heart";
-    heart.innerHTML="❤️";
-    heart.style.left=Math.random()*100+"vw";
-    heart.style.top="100vh";
-    document.body.appendChild(heart);
+// start experience
+function beginExperience(){
+  startAudio();
 
-    setTimeout(()=>heart.remove(),4000);
-  },300);
+  document.getElementById("tap-screen").style.display="none";
+  document.getElementById("main").classList.add("visible");
 }
 
 </script>
