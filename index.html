@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Mehnaj ❤️</title>
+<style>
+body {
+  background:black;
+  color:pink;
+  text-align:center;
+  font-family:Arial;
+  margin-top:30%;
+}
+.flower {
+  font-size:60px;
+  animation:bloom 2s infinite alternate;
+}
+@keyframes bloom {
+  from {transform:scale(1);}
+  to {transform:scale(1.4);}
+}
+</style>
+</head>
+<body>
+
+<h2>Hey Mehnaj...</h2>
+<p id="text"></p>
+<div class="flower">🌸</div>
+
+<script>
+let message = "A flower for the flower ❤️";
+let i = 0;
+
+function typeWriter() {
+  if (i < message.length) {
+    document.getElementById("text").innerHTML += message.charAt(i);
+    i++;
+    setTimeout(typeWriter, 50);
+  }
+}
+
+typeWriter();
+</script>
+
+</body>
+</html>
