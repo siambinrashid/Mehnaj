@@ -1,83 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Mehnaj ❤️</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Mehnaj 🌸</title>
 
 <style>
-body{
+body {
   margin:0;
-  background:black;
+  background:#1a0a14;
   color:white;
   font-family:Arial;
   text-align:center;
   overflow:hidden;
 }
 
-.container{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+/* TAP SCREEN */
+#tap-screen{
+  position:fixed;
+  inset:0;
   display:flex;
   flex-direction:column;
+  justify-content:center;
   align-items:center;
-  gap:25px;
+  cursor:pointer;
 }
 
-#startText{
-  font-size:20px;
+.tap-rose{
+  font-size:70px;
+  animation: pulse 2s infinite;
+}
+
+.tap-name{
+  font-size:40px;
   color:pink;
-  animation:fade 1.5s infinite alternate;
 }
 
-.flower{
-  font-size:80px;
-  opacity:0;
-  transform:scale(0);
-  transition:1.2s;
+.tap-hint{
+  opacity:0.6;
 }
 
-#text{
-  font-size:18px;
-  color:pink;
-  min-height:40px;
+@keyframes pulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.1);}
 }
 
-#final{
-  font-size:20px;
+/* MAIN */
+#main{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
   opacity:0;
   transition:1s;
 }
 
+#main.visible{
+  opacity:1;
+}
+
+/* FLOWER */
+.flower{
+  font-size:90px;
+  opacity:0;
+  transform:scale(0);
+  transition:1s;
+}
+
+/* TEXT */
+.text{
+  color:pink;
+  font-size:22px;
+  margin-top:20px;
+  opacity:0;
+  transition:1s;
+}
+
+/* HEARTS */
 .heart{
   position:absolute;
   color:red;
   font-size:20px;
-  animation:float 4s linear infinite;
+  animation: float 4s linear infinite;
 }
 
 @keyframes float{
   0%{transform:translateY(0);}
   100%{transform:translateY(-800px);}
 }
-
-@keyframes fade{
-  from{opacity:0.5;}
-  to{opacity:1;}
-}
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
-  <p id="startText">Tap anywhere… 🌸</p>
+<!-- TAP -->
+<div id="tap-screen" onclick="startExperience()">
+  <div class="tap-rose">🌸</div>
+  <div class="tap-name">Mehnaj</div>
+  <div class="tap-hint">tap anywhere</div>
+</div>
 
+<!-- MAIN -->
+<div id="main">
   <div class="flower" id="flower">🌸</div>
-  <p id="text"></p>
-  <p id="final"></p>
+  <div class="text" id="text">A flower for the flower… Mehnaj ❤️</div>
 </div>
 
 <!-- 🎶 YOUR SONG -->
@@ -87,70 +115,32 @@ body{
 
 <script>
 
-// MUST be direct tap
-document.body.addEventListener("click", startExperience, { once: true });
-
 function startExperience(){
 
-  let audio = document.getElementById("music");
-
   // play music
+  let audio = document.getElementById("music");
   audio.play().catch(() => {});
 
-  runApp();
-}
+  // hide tap screen
+  let tap = document.getElementById("tap-screen");
+  tap.style.display = "none";
 
-function runApp(){
+  // show main
+  let main = document.getElementById("main");
+  main.classList.add("visible");
 
-  document.getElementById("startText").style.display = "none";
-
+  // flower animation
   let flower = document.getElementById("flower");
-  flower.style.opacity = 1;
-  flower.style.transform = "scale(1.6)";
+  setTimeout(()=>{
+    flower.style.opacity = 1;
+    flower.style.transform = "scale(1.5)";
+  },300);
 
-  let messages = [
-    "Hey Mehnaj...",
-    "I didn’t plan this...",
-    "But somehow you became special to me...",
-    "So I made something small..."
-  ];
-
+  // text animation
   let text = document.getElementById("text");
-  let index = 0;
-
-  function showLine(){
-    if(index < messages.length){
-      typeText(messages[index], () => {
-        index++;
-        setTimeout(showLine, 900);
-      });
-    } else {
-      showFinal();
-    }
-  }
-
-  function typeText(msg, callback){
-    text.innerHTML = "";
-    let i = 0;
-    function typing(){
-      if(i < msg.length){
-        text.innerHTML += msg.charAt(i);
-        i++;
-        setTimeout(typing, 40);
-      } else {
-        callback();
-      }
-    }
-    typing();
-  }
-
-  function showFinal(){
-    let final = document.getElementById("final");
-    final.innerHTML = "A flower for the flower… Mehnaj ❤️";
-    final.style.opacity = 1;
-  }
-
-  setTimeout(showLine, 800);
+  setTimeout(()=>{
+    text.style.opacity = 1;
+  },1000);
 
   // floating hearts
   setInterval(()=>{
