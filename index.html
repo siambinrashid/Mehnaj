@@ -14,7 +14,6 @@ body{
   overflow:hidden;
 }
 
-/* center */
 .container{
   position:absolute;
   top:50%;
@@ -22,7 +21,6 @@ body{
   transform:translate(-50%,-50%);
 }
 
-/* button */
 button{
   padding:12px 24px;
   border:none;
@@ -33,7 +31,6 @@ button{
   cursor:pointer;
 }
 
-/* flower */
 .flower{
   font-size:80px;
   opacity:0;
@@ -41,7 +38,6 @@ button{
   transition:1.2s;
 }
 
-/* text */
 #text{
   margin-top:20px;
   font-size:18px;
@@ -49,7 +45,6 @@ button{
   min-height:40px;
 }
 
-/* final message */
 #final{
   margin-top:15px;
   font-size:20px;
@@ -57,7 +52,6 @@ button{
   transition:1s;
 }
 
-/* hearts */
 .heart{
   position:absolute;
   color:red;
@@ -82,15 +76,25 @@ button{
   <p id="final"></p>
 </div>
 
-<audio id="music" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<!-- FIX 1: preload + playsinline -->
+<audio id="music" src="love.mp3" preload="auto" playsinline></audio>
 
 <script>
 
 function start(){
   document.querySelector("button").style.display="none";
 
-  // play music (some phones need tap — this works)
-  document.getElementById("music").play();
+  // FIX 2: safer play (prevents errors)
+  let audio = document.getElementById("music");
+  audio.currentTime = 0;
+
+  let playPromise = audio.play();
+
+  if (playPromise !== undefined) {
+    playPromise.catch(error => {
+      console.log("Audio blocked:", error);
+    });
+  }
 
   let flower=document.getElementById("flower");
   flower.style.opacity=1;
@@ -98,8 +102,8 @@ function start(){
 
   let messages=[
     "Hey Mehnaj...",
-    "I just wanted to do it cause ",
-    "I love you",
+    "I just wanted to do this because...",
+    "I love you ❤️",
     "So I made something small..."
   ];
 
@@ -110,7 +114,7 @@ function start(){
     if(index < messages.length){
       typeText(messages[index], () => {
         index++;
-        setTimeout(showLine, 800);
+        setTimeout(showLine, 900);
       });
     } else {
       showFinal();
@@ -140,7 +144,7 @@ function start(){
 
   setTimeout(showLine, 800);
 
-  // floating hearts
+  // hearts
   setInterval(()=>{
     let heart=document.createElement("div");
     heart.className="heart";
@@ -150,7 +154,7 @@ function start(){
     document.body.appendChild(heart);
 
     setTimeout(()=>heart.remove(),4000);
-  },250);
+  },300);
 }
 
 </script>
