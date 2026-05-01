@@ -19,8 +19,13 @@ body{
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:25px;
 }
 
+/* buttons */
 button{
   padding:12px 24px;
   border:none;
@@ -31,6 +36,7 @@ button{
   cursor:pointer;
 }
 
+/* flower */
 .flower{
   font-size:80px;
   opacity:0;
@@ -38,20 +44,21 @@ button{
   transition:1.2s;
 }
 
+/* text */
 #text{
-  margin-top:25px;
   font-size:18px;
   color:pink;
   min-height:40px;
 }
 
+/* final */
 #final{
-  margin-top:15px;
   font-size:20px;
   opacity:0;
   transition:1s;
 }
 
+/* hearts */
 .heart{
   position:absolute;
   color:red;
@@ -71,44 +78,45 @@ button{
 
 <div class="container">
   <button onclick="start()">Tap this 🌸</button>
+  <button onclick="playMusic()">Play Music 🎵</button>
+
   <div class="flower" id="flower">🌸</div>
   <p id="text"></p>
   <p id="final"></p>
 </div>
 
-<!-- FIX 1: preload + playsinline -->
-<audio id="music" src="love.mp3" preload="auto" playsinline></audio>
+<audio id="music" src="love.mp3" preload="auto"></audio>
 
 <script>
+
+function playMusic(){
+  let audio = document.getElementById("music");
+  audio.currentTime = 0;
+  audio.muted = false;
+
+  audio.play().catch(() => {
+    alert("Tap again to enable sound 🎵");
+  });
+}
 
 function start(){
   document.querySelector("button").style.display="none";
 
-  // FIX 2: safer play (prevents errors)
-  let audio = document.getElementById("music");
-  audio.currentTime = 0;
+  playMusic(); // auto try
 
-  let playPromise = audio.play();
+  let flower = document.getElementById("flower");
+  flower.style.opacity = 1;
+  flower.style.transform = "scale(1.5)";
 
-  if (playPromise !== undefined) {
-    playPromise.catch(error => {
-      console.log("Audio blocked:", error);
-    });
-  }
-
-  let flower=document.getElementById("flower");
-  flower.style.opacity=1;
-  flower.style.transform="scale(1.6)";
-
-  let messages=[
+  let messages = [
     "Hey Mehnaj...",
-    "I just wanted to do this because...",
-    "I love you ❤️",
+    "I didn’t plan this...",
+    "But somehow you became special to me...",
     "So I made something small..."
   ];
 
-  let text=document.getElementById("text");
-  let index=0;
+  let text = document.getElementById("text");
+  let index = 0;
 
   function showLine(){
     if(index < messages.length){
@@ -125,8 +133,8 @@ function start(){
     text.innerHTML="";
     let i=0;
     function typing(){
-      if(i<msg.length){
-        text.innerHTML+=msg.charAt(i);
+      if(i < msg.length){
+        text.innerHTML += msg.charAt(i);
         i++;
         setTimeout(typing,40);
       } else {
@@ -137,16 +145,16 @@ function start(){
   }
 
   function showFinal(){
-    let final=document.getElementById("final");
-    final.innerHTML="A flower for the flower… Mehnaj ❤️";
-    final.style.opacity=1;
+    let final = document.getElementById("final");
+    final.innerHTML = "A flower for the flower… Mehnaj ❤️";
+    final.style.opacity = 1;
   }
 
   setTimeout(showLine, 800);
 
-  // hearts
+  // hearts animation
   setInterval(()=>{
-    let heart=document.createElement("div");
+    let heart = document.createElement("div");
     heart.className="heart";
     heart.innerHTML="❤️";
     heart.style.left=Math.random()*100+"vw";
