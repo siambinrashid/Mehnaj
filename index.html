@@ -14,7 +14,6 @@ body{
   overflow:hidden;
 }
 
-/* center layout */
 .container{
   position:absolute;
   top:50%;
@@ -26,14 +25,12 @@ body{
   gap:25px;
 }
 
-/* intro text */
 #startText{
   font-size:20px;
   color:pink;
   animation:fade 1.5s infinite alternate;
 }
 
-/* flower */
 .flower{
   font-size:80px;
   opacity:0;
@@ -41,21 +38,18 @@ body{
   transition:1.2s;
 }
 
-/* typing text */
 #text{
   font-size:18px;
   color:pink;
   min-height:40px;
 }
 
-/* final message */
 #final{
   font-size:20px;
   opacity:0;
   transition:1s;
 }
 
-/* floating hearts */
 .heart{
   position:absolute;
   color:red;
@@ -68,7 +62,6 @@ body{
   100%{transform:translateY(-800px);}
 }
 
-/* small fade animation */
 @keyframes fade{
   from{opacity:0.5;}
   to{opacity:1;}
@@ -87,30 +80,35 @@ body{
   <p id="final"></p>
 </div>
 
+<!-- ✅ use reliable audio -->
 <audio id="music" preload="auto" loop>
   <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_c8f9c0c5d2.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 
+// 🔥 MUST be directly tied to click
 document.body.addEventListener("click", startExperience, { once: true });
 
 function startExperience(){
 
-  // remove intro text
+  let audio = document.getElementById("music");
+
+  // 🔥 critical: play directly on click
+  audio.muted = false;
+  audio.play();
+
+  runApp();
+}
+
+function runApp(){
+
   document.getElementById("startText").style.display = "none";
 
-  // play music
-  let audio = document.getElementById("music");
-  audio.muted = false;
-  audio.play().catch(() => {});
-
-  // show flower
   let flower = document.getElementById("flower");
   flower.style.opacity = 1;
   flower.style.transform = "scale(1.6)";
 
-  // message list
   let messages = [
     "Hey Mehnaj...",
     "I didn’t plan this...",
@@ -155,7 +153,7 @@ function startExperience(){
 
   setTimeout(showLine, 800);
 
-  // floating hearts
+  // hearts animation
   setInterval(()=>{
     let heart = document.createElement("div");
     heart.className="heart";
